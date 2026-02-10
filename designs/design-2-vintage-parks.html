@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shotgun — Vintage Parks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  :root {
+    --cream: #F5E6C8;
+    --cream-light: #FBF4E8;
+    --parchment: #E8D5B0;
+    --parchment-dark: #D4C09A;
+    --brick: #C1553B;
+    --brick-dark: #A3432D;
+    --brick-light: #D4755F;
+    --forest: #2D5A3D;
+    --forest-dark: #1E3F2B;
+    --forest-light: #3D7A53;
+    --gold: #B8860B;
+    --gold-light: #D4A01A;
+    --gold-dark: #8C6600;
+    --navy: #2C3E50;
+    --navy-dark: #1A252F;
+    --navy-light: #3D566E;
+    --text-primary: #2C2418;
+    --text-secondary: #5C4F3D;
+    --text-muted: #8A7D6B;
+    --border: #C4B293;
+    --border-light: #D9CCAF;
+    --shadow-warm: rgba(44, 36, 24, 0.15);
+    --shadow-deep: rgba(44, 36, 24, 0.25);
+
+    --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+    --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--cream);
+    color: var(--text-primary);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(193, 85, 59, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(45, 90, 61, 0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ── HEADER ── */
+  .park-header {
+    text-align: center;
+    padding: 32px 24px 16px;
+    position: relative;
+  }
+
+  .park-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(640px, 90%);
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--gold) 15%,
+      var(--brick) 50%,
+      var(--gold) 85%,
+      transparent 100%
+    );
+  }
+
+  .park-title {
+    font-family: 'Lilita One', cursive;
+    font-size: clamp(2rem, 5vw, 3.052rem);
+    color: var(--brick);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    text-shadow: 2px 2px 0px rgba(184, 134, 11, 0.2);
+    animation: titleReveal 0.6s var(--ease-out) both;
+  }
+
+  @keyframes titleReveal {
+    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .park-subtitle {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── DECORATIVE RULE ── */
+  .ornament-rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 24px;
+    margin: 8px 0;
+  }
+
+  .ornament-rule .line {
+    flex: 1;
+    max-width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .ornament-rule .diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ── CONFIG BAR ── */
+  .config-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 16px 24px;
+    margin: 8px 24px;
+    background: var(--cream-light);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    animation: fadeSlideUp 0.4s var(--ease-out) 0.1s both;
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .config-bar label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'Lora', serif;
+  }
+
+  .config-bar input[type="text"],
+  .config-bar input[type="number"] {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-family: 'Lora', serif;
+    transition: border-color 0.15s var(--ease-out), box-shadow 0.15s var(--ease-out);
+  }
+
+  .config-bar input[type="text"] { width: 380px; max-width: 100%; }
+  .config-bar input[type="number"] { width: 64px; text-align: center; }
+
+  .config-bar input:focus {
+    outline: none;
+    border-color: var(--brick);
+    box-shadow: 0 0 0 3px rgba(193, 85, 59, 0.15);
+  }
+
+  /* ── BUTTONS ── */
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 24px;
+    padding: 8px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: 'Lilita One', cursive;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: transform 0.15s var(--ease-out), box-shadow 0.15s var(--ease-out), background-color 0.15s var(--ease-out);
+    position: relative;
+  }
+
+  button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow-warm);
+  }
+
+  button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px var(--shadow-warm);
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .btn-primary {
+    background: var(--brick);
+    color: var(--cream-light);
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--brick-dark); }
+
+  .btn-success {
+    background: var(--forest);
+    color: var(--cream-light);
+  }
+  .btn-success:hover:not(:disabled) { background: var(--forest-dark); }
+
+  .btn-danger {
+    background: var(--brick-dark);
+    color: var(--cream-light);
+  }
+  .btn-danger:hover:not(:disabled) { background: #8B3422; }
+
+  .btn-info {
+    background: var(--navy);
+    color: var(--cream-light);
+  }
+  .btn-info:hover:not(:disabled) { background: var(--navy-dark); }
+
+  .btn-focus {
+    background: var(--gold);
+    color: var(--text-primary);
+  }
+  .btn-focus:hover:not(:disabled) { background: var(--gold-dark); color: var(--cream-light); }
+
+  .btn-sm {
+    padding: 5px 14px;
+    font-size: 0.72rem;
+    border-radius: 20px;
+  }
+
+  /* ── ACTION BAR ── */
+  .action-bar {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    padding: 12px 24px;
+    animation: fadeSlideUp 0.4s var(--ease-out) 0.2s both;
+  }
+
+  /* ── GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    padding: 16px 24px 24px;
+  }
+
+  /* ── TICKET CARD ── */
+  .card {
+    background: var(--cream-light);
+    border-radius: 10px;
+    padding: 0;
+    border: 2px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), opacity 0.3s var(--ease-in);
+    box-shadow: 0 2px 8px var(--shadow-warm);
+    animation: cardEnter 0.4s var(--ease-out) both;
+  }
+
+  @keyframes cardEnter {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-deep);
+  }
+
+  .card.removing {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+
+  /* Ticket top stripe */
+  .card::before {
+    content: '';
+    display: block;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--brick) 0px,
+      var(--brick) 12px,
+      var(--gold) 12px,
+      var(--gold) 16px,
+      var(--forest) 16px,
+      var(--forest) 28px,
+      var(--gold) 28px,
+      var(--gold) 32px
+    );
+  }
+
+  .card-body {
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  /* Ticket stub perforated edge */
+  .card-stub {
+    position: relative;
+    padding: 10px 16px;
+    background: var(--parchment);
+    border-top: 1px dashed var(--border);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .card-stub::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--cream);
+    border-right: 1px solid var(--border-light);
+  }
+
+  .card-stub::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--cream);
+    border-left: 1px solid var(--border-light);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-name {
+    font-family: 'Lilita One', cursive;
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--navy-dark);
+    letter-spacing: 0.02em;
+  }
+
+  .verified-badge {
+    color: var(--forest);
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: none;
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+
+  .verified-badge.show { display: inline; }
+
+  /* ── STATUS BADGES ── */
+  .badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'Lilita One', cursive;
+  }
+
+  .badge-running {
+    background: var(--forest);
+    color: var(--cream-light);
+  }
+
+  .badge-launching {
+    background: var(--gold);
+    color: var(--text-primary);
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0); }
+    50% { box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.2); }
+  }
+
+  .badge-stopped {
+    background: var(--parchment-dark);
+    color: var(--text-secondary);
+  }
+
+  .badge-error {
+    background: var(--brick);
+    color: var(--cream-light);
+  }
+
+  /* ── CARD DETAILS ── */
+  .wait-info {
+    font-size: 0.82rem;
+    color: var(--gold-dark);
+    min-height: 1.3em;
+    font-style: italic;
+  }
+
+  .cookie-id {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.7;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .card-screenshot {
+    width: 100%;
+    border-radius: 6px;
+    margin-top: 4px;
+    display: none;
+    border: 1px solid var(--border-light);
+  }
+
+  /* ── ADMIT ONE STAMP ── */
+  .admit-stamp {
+    position: absolute;
+    top: 18px;
+    right: -18px;
+    font-family: 'Lilita One', cursive;
+    font-size: 0.52rem;
+    color: var(--brick-light);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transform: rotate(35deg);
+    opacity: 0.18;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* ── LOG SECTION ── */
+  .log-section {
+    padding: 0 24px 32px;
+    animation: fadeSlideUp 0.4s var(--ease-out) 0.3s both;
+  }
+
+  .log-header {
+    font-family: 'Lilita One', cursive;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  #log {
+    background: var(--navy-dark);
+    border: 2px solid var(--navy);
+    border-radius: 8px;
+    height: 180px;
+    overflow-y: auto;
+    padding: 12px 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--gold-light);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  #log div {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  #log::-webkit-scrollbar { width: 6px; }
+  #log::-webkit-scrollbar-track { background: transparent; }
+  #log::-webkit-scrollbar-thumb {
+    background: var(--navy-light);
+    border-radius: 3px;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    grid-column: 1 / -1;
+  }
+
+  .empty-state::before {
+    content: 'E';
+    display: block;
+    font-family: 'Lilita One', cursive;
+    font-size: 3rem;
+    color: var(--parchment-dark);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+    opacity: 0.5;
+  }
+
+  /* ── FOOTER ORNAMENT ── */
+  .footer-ornament {
+    text-align: center;
+    padding: 12px 0 32px;
+    opacity: 0.3;
+  }
+
+  .footer-ornament svg {
+    width: 48px;
+    height: 16px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .config-bar {
+      margin: 8px 12px;
+      padding: 12px 16px;
+    }
+
+    .config-bar input[type="text"] {
+      width: 100%;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+      padding: 12px 12px 20px;
+      gap: 14px;
+    }
+
+    .action-bar {
+      padding: 8px 12px;
+    }
+
+    .log-section {
+      padding: 0 12px 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="park-header">
+  <h1 class="park-title">Shotgun</h1>
+  <p class="park-subtitle">Queue Management Dashboard</p>
+</header>
+
+<div class="ornament-rule">
+  <span class="line"></span>
+  <span class="diamond"></span>
+  <span class="line"></span>
+</div>
+
+<div class="config-bar">
+  <label for="targetUrl">Destination</label>
+  <input type="text" id="targetUrl" placeholder="Enter target URL...">
+  <label for="browserCount">Riders</label>
+  <input type="number" id="browserCount" min="1" max="20" placeholder="4">
+  <button class="btn-primary" onclick="saveConfig()">Save Config</button>
+  <button class="btn-success" onclick="launchAll()">Launch All</button>
+</div>
+
+<div class="action-bar">
+  <button class="btn-info" onclick="launchOne()">Launch One More</button>
+  <button class="btn-danger" onclick="closeAll()">Close All</button>
+</div>
+
+<div class="grid" id="grid">
+  <div class="empty-state" id="emptyState">No sessions yet. Set your destination and click Launch All.</div>
+</div>
+
+<div class="log-section">
+  <h3 class="log-header">Event Log</h3>
+  <div id="log"></div>
+</div>
+
+<div class="footer-ornament">
+  <svg viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 8 L8 4 L16 8 L24 4 L32 8 L40 4 L48 8" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/>
+    <circle cx="24" cy="8" r="2" fill="currentColor" opacity="0.3"/>
+  </svg>
+</div>
+
+<script>
+const grid = document.getElementById('grid');
+const logEl = document.getElementById('log');
+const emptyState = document.getElementById('emptyState');
+const sessionsMap = {};
+let cardIndex = 0;
+
+fetch('/api/sessions').then(r => r.json()).then(data => {
+  document.getElementById('targetUrl').value = data.config.targetUrl;
+  document.getElementById('browserCount').value = data.config.browserCount;
+  data.sessions.forEach(s => upsertCard(s));
+});
+
+const evtSource = new EventSource('/api/events');
+evtSource.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+  if (data.type === 'log') appendLog(data.message);
+  if (data.type === 'update') upsertCard(data.session);
+  if (data.type === 'remove') removeCard(data.id);
+};
+
+function appendLog(msg) {
+  const d = document.createElement('div');
+  d.textContent = msg;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function badgeClass(status) {
+  return 'badge badge-' + (status || 'stopped');
+}
+
+function upsertCard(s) {
+  emptyState.style.display = 'none';
+  if (sessionsMap[s.id]) {
+    const card = sessionsMap[s.id];
+    card.querySelector('.badge').className = badgeClass(s.status);
+    card.querySelector('.badge').textContent = s.status;
+    const btns = card.querySelectorAll('.card-actions button');
+    const isRunning = s.status === 'running';
+    btns[0].disabled = !isRunning;
+    btns[1].disabled = !isRunning;
+    btns[2].disabled = !isRunning;
+    const waitEl = card.querySelector('.wait-info');
+    waitEl.textContent = s.waitInfo || '';
+    const vb = card.querySelector('.verified-badge');
+    vb.className = 'verified-badge' + (s.verified ? ' show' : '');
+    const cid = card.querySelector('.cookie-id');
+    cid.textContent = s.verified ? s.cookieId || '' : '';
+    return;
+  }
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (cardIndex * 0.06) + 's';
+  cardIndex++;
+
+  const isRunning = s.status === 'running';
+  card.innerHTML =
+    '<div class="card-body">' +
+      '<div class="card-header">' +
+        '<div class="card-title">' +
+          '<span class="card-name">' + esc(s.name) + '</span>' +
+          '<span class="verified-badge' + (s.verified ? ' show' : '') + '" title="Unique session verified">&#10003; verified</span>' +
+        '</div>' +
+        '<span class="' + badgeClass(s.status) + '">' + esc(s.status) + '</span>' +
+      '</div>' +
+      '<div class="wait-info">' + esc(s.waitInfo || '') + '</div>' +
+      '<div class="cookie-id">' + (s.verified ? esc(s.cookieId || '') : '') + '</div>' +
+      '<img class="card-screenshot" id="ss-' + s.id + '">' +
+      '<span class="admit-stamp">Admit One</span>' +
+    '</div>' +
+    '<div class="card-stub">' +
+      '<button class="btn-focus btn-sm" onclick="focusOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Focus</button>' +
+      '<button class="btn-info btn-sm" onclick="takeScreenshot(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Screenshot</button>' +
+      '<button class="btn-danger btn-sm" onclick="closeOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Close</button>' +
+    '</div>';
+
+  sessionsMap[s.id] = card;
+  grid.appendChild(card);
+}
+
+function removeCard(id) {
+  const card = sessionsMap[id];
+  if (!card) return;
+  card.classList.add('removing');
+  setTimeout(() => {
+    card.remove();
+    delete sessionsMap[id];
+    if (Object.keys(sessionsMap).length === 0) {
+      emptyState.style.display = '';
+    }
+  }, 300);
+}
+
+function esc(str) {
+  const d = document.createElement('span');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function saveConfig() {
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      targetUrl: document.getElementById('targetUrl').value,
+      browserCount: document.getElementById('browserCount').value,
+    }),
+  });
+}
+
+async function launchAll() {
+  await saveConfig();
+  fetch('/api/sessions/launch-all', { method: 'POST' });
+}
+
+async function launchOne() {
+  await saveConfig();
+  fetch('/api/sessions/launch', { method: 'POST' });
+}
+
+function closeAll() { fetch('/api/sessions/close-all', { method: 'POST' }); }
+
+function focusOne(id) { fetch('/api/sessions/' + id + '/focus', { method: 'POST' }); }
+
+function closeOne(id) { fetch('/api/sessions/' + id + '/close', { method: 'POST' }); }
+
+async function takeScreenshot(id) {
+  const img = document.getElementById('ss-' + id);
+  img.style.display = 'none';
+  const r = await fetch('/api/sessions/' + id + '/screenshot', { method: 'POST' });
+  if (!r.ok) return;
+  const data = await r.json();
+  img.src = data.screenshot;
+  img.style.display = 'block';
+}
+</script>
+</body>
+</html>

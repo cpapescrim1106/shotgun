@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shotgun — Pixar Pop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  :root {
+    --red: #E2211C;
+    --red-dark: #B81A16;
+    --yellow: #FFC312;
+    --yellow-light: #FFD54F;
+    --blue: #0984E3;
+    --blue-dark: #0769B5;
+    --brown: #8B5E3C;
+    --brown-light: #A67C52;
+    --white: #FEFEFE;
+    --charcoal: #2D3436;
+    --charcoal-light: #3D4446;
+    --green: #00B894;
+    --green-dark: #009B7D;
+
+    --bg: #FFF8F0;
+    --bg-warm: #FFF3E6;
+    --surface: #FFFFFF;
+    --text-primary: #2D3436;
+    --text-secondary: #636E72;
+    --text-muted: #B2BEC3;
+    --border: #DFE6E9;
+
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius-pill: 999px;
+
+    --shadow-toy: 0 6px 0 rgba(0,0,0,0.15);
+    --shadow-toy-sm: 0 4px 0 rgba(0,0,0,0.12);
+    --shadow-card: 0 8px 0 rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-card-hover: 0 12px 0 rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
+
+    --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+    --bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === DECORATIVE BACKGROUND SHAPES === */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -120px;
+    right: -80px;
+    width: 320px;
+    height: 320px;
+    background: var(--yellow);
+    border-radius: 50%;
+    opacity: 0.12;
+    z-index: 0;
+    animation: floatShape 12s ease-in-out infinite;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -60px;
+    left: -100px;
+    width: 260px;
+    height: 260px;
+    background: var(--blue);
+    border-radius: 50%;
+    opacity: 0.1;
+    z-index: 0;
+    animation: floatShape 15s ease-in-out infinite reverse;
+  }
+
+  @keyframes floatShape {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(20px, -15px) scale(1.05); }
+    66% { transform: translate(-10px, 10px) scale(0.97); }
+  }
+
+  /* === HEADER === */
+  .header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 32px 24px 16px;
+  }
+
+  .header-title {
+    font-family: 'Lilita One', cursive;
+    font-size: clamp(2.5rem, 6vw, 3.8rem);
+    color: var(--red);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-shadow: 4px 4px 0 rgba(226,33,28,0.15);
+    animation: popIn 0.6s var(--spring) both;
+  }
+
+  .header-sub {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    animation: popIn 0.6s var(--spring) 0.1s both;
+  }
+
+  @keyframes popIn {
+    0% { opacity: 0; transform: scale(0.6) translateY(20px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* === CONFIG BAR === */
+  .config-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 16px 24px;
+    margin: 0 24px 8px;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 3px solid var(--blue);
+    box-shadow: var(--shadow-toy);
+    animation: slideUp 0.5s var(--ease-out) 0.15s both;
+  }
+
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .config-bar label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .config-bar input[type="text"],
+  .config-bar input[type="number"] {
+    background: var(--bg-warm);
+    border: 3px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+    outline: none;
+  }
+
+  .config-bar input[type="text"] { width: 380px; max-width: 100%; }
+  .config-bar input[type="number"] { width: 72px; text-align: center; }
+
+  .config-bar input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.15);
+  }
+
+  /* === BUTTONS === */
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 10px 22px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    transition: transform 0.2s var(--spring), box-shadow 0.2s var(--ease-out);
+    position: relative;
+    min-height: 44px;
+  }
+
+  button:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.03);
+  }
+
+  button:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: none !important;
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  button:focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: var(--white);
+    box-shadow: 0 4px 0 var(--blue-dark);
+  }
+  .btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 0 var(--blue-dark);
+  }
+
+  .btn-success {
+    background: var(--green);
+    color: var(--white);
+    box-shadow: 0 4px 0 var(--green-dark);
+  }
+  .btn-success:hover:not(:disabled) {
+    box-shadow: 0 6px 0 var(--green-dark);
+  }
+
+  .btn-danger {
+    background: var(--red);
+    color: var(--white);
+    box-shadow: 0 4px 0 var(--red-dark);
+  }
+  .btn-danger:hover:not(:disabled) {
+    box-shadow: 0 6px 0 var(--red-dark);
+  }
+
+  .btn-info {
+    background: var(--brown);
+    color: var(--white);
+    box-shadow: 0 4px 0 #6B4226;
+  }
+  .btn-info:hover:not(:disabled) {
+    box-shadow: 0 6px 0 #6B4226;
+  }
+
+  .btn-focus {
+    background: var(--yellow);
+    color: var(--charcoal);
+    box-shadow: 0 4px 0 #D4A00F;
+  }
+  .btn-focus:hover:not(:disabled) {
+    box-shadow: 0 6px 0 #D4A00F;
+  }
+
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    border-radius: var(--radius-sm);
+    min-height: 36px;
+  }
+  .btn-sm.btn-primary { box-shadow: 0 3px 0 var(--blue-dark); }
+  .btn-sm.btn-primary:hover:not(:disabled) { box-shadow: 0 5px 0 var(--blue-dark); }
+  .btn-sm.btn-danger { box-shadow: 0 3px 0 var(--red-dark); }
+  .btn-sm.btn-danger:hover:not(:disabled) { box-shadow: 0 5px 0 var(--red-dark); }
+  .btn-sm.btn-info { box-shadow: 0 3px 0 #6B4226; }
+  .btn-sm.btn-info:hover:not(:disabled) { box-shadow: 0 5px 0 #6B4226; }
+  .btn-sm.btn-focus { box-shadow: 0 3px 0 #D4A00F; }
+  .btn-sm.btn-focus:hover:not(:disabled) { box-shadow: 0 5px 0 #D4A00F; }
+
+  /* === ACTION BAR === */
+  .action-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    padding: 12px 24px;
+    animation: slideUp 0.5s var(--ease-out) 0.25s both;
+  }
+
+  /* === GRID === */
+  .grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 16px 24px;
+  }
+
+  /* === CARDS === */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    border: 4px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s var(--spring), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+    animation: cardEntrance 0.5s var(--bounce) both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  .card:nth-child(5n+1)::before { background: var(--red); }
+  .card:nth-child(5n+2)::before { background: var(--blue); }
+  .card:nth-child(5n+3)::before { background: var(--yellow); }
+  .card:nth-child(5n+4)::before { background: var(--green); }
+  .card:nth-child(5n+5)::before { background: var(--brown); }
+
+  .card:nth-child(5n+1) { border-color: rgba(226, 33, 28, 0.25); }
+  .card:nth-child(5n+2) { border-color: rgba(9, 132, 227, 0.25); }
+  .card:nth-child(5n+3) { border-color: rgba(255, 195, 18, 0.35); }
+  .card:nth-child(5n+4) { border-color: rgba(0, 184, 148, 0.25); }
+  .card:nth-child(5n+5) { border-color: rgba(139, 94, 60, 0.25); }
+
+  .card:hover {
+    transform: translateY(-6px) rotate(-0.5deg);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .card.removing {
+    animation: cardExit 0.35s var(--ease-out) forwards;
+  }
+
+  @keyframes cardEntrance {
+    0% {
+      opacity: 0;
+      transform: scale(0.7) rotate(3deg) translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(0) translateY(0);
+    }
+  }
+
+  @keyframes cardExit {
+    0% { opacity: 1; transform: scale(1) rotate(0); }
+    100% { opacity: 0; transform: scale(0.6) rotate(-5deg) translateY(20px); }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-name {
+    font-family: 'Lilita One', cursive;
+    font-size: 1.2rem;
+    color: var(--charcoal);
+    letter-spacing: 0.01em;
+  }
+
+  .verified-badge {
+    display: none;
+    align-items: center;
+    gap: 3px;
+    background: var(--green);
+    color: var(--white);
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    animation: badgePop 0.3s var(--spring) both;
+  }
+
+  .verified-badge.show {
+    display: inline-flex;
+  }
+
+  @keyframes badgePop {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+  }
+
+  .badge {
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: var(--shadow-toy-sm);
+  }
+
+  .badge-running {
+    background: var(--green);
+    color: var(--white);
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 3px 0 var(--green-dark); }
+    50% { box-shadow: 0 3px 0 var(--green-dark), 0 0 12px rgba(0, 184, 148, 0.4); }
+  }
+
+  .badge-launching {
+    background: var(--yellow);
+    color: var(--charcoal);
+    animation: wiggle 0.6s var(--spring) infinite;
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+  }
+
+  .badge-stopped {
+    background: var(--text-muted);
+    color: var(--white);
+  }
+
+  .badge-error {
+    background: var(--red);
+    color: var(--white);
+    animation: shake 0.4s var(--spring);
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-2px); }
+  }
+
+  .wait-info {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--brown);
+    min-height: 1.3em;
+    padding: 2px 0;
+  }
+
+  .cookie-id {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: var(--bg-warm);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    min-height: 0;
+  }
+
+  .cookie-id:empty {
+    display: none;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  .card-screenshot {
+    width: 100%;
+    border-radius: var(--radius-md);
+    margin-top: 6px;
+    display: none;
+    border: 3px solid var(--border);
+  }
+
+  /* === EMPTY STATE === */
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 700;
+    grid-column: 1 / -1;
+    animation: popIn 0.6s var(--spring) 0.35s both;
+  }
+
+  .empty-state::before {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px;
+    background: var(--yellow);
+    border-radius: 50%;
+    opacity: 0.5;
+    box-shadow: 0 6px 0 rgba(212,160,15,0.3);
+    animation: floatShape 4s ease-in-out infinite;
+  }
+
+  /* === LOG SECTION === */
+  .log-section {
+    position: relative;
+    z-index: 1;
+    padding: 16px 24px 32px;
+    animation: slideUp 0.5s var(--ease-out) 0.35s both;
+  }
+
+  .log-section h3 {
+    font-family: 'Lilita One', cursive;
+    font-size: 1.1rem;
+    color: var(--charcoal);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .log-section h3::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: var(--red);
+    border-radius: 4px;
+    transform: rotate(12deg);
+    flex-shrink: 0;
+  }
+
+  #log {
+    background: var(--charcoal);
+    border: 4px solid var(--charcoal-light);
+    border-radius: var(--radius-lg);
+    height: 180px;
+    overflow-y: auto;
+    padding: 14px 18px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--green);
+    box-shadow: inset 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  #log div {
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding: 1px 0;
+  }
+
+  #log::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  #log::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #log::-webkit-scrollbar-thumb {
+    background: var(--charcoal-light);
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--charcoal);
+  }
+
+  /* === DECORATIVE ELEMENTS === */
+  .deco-dots {
+    position: fixed;
+    z-index: 0;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  .deco-dots--tl {
+    top: 120px;
+    left: 30px;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--red) 3px, transparent 3px);
+    background-size: 20px 20px;
+  }
+
+  .deco-dots--br {
+    bottom: 80px;
+    right: 40px;
+    width: 120px;
+    height: 80px;
+    background: radial-gradient(circle, var(--blue) 3px, transparent 3px);
+    background-size: 20px 20px;
+  }
+
+  .deco-star {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.06;
+  }
+
+  .deco-star--1 {
+    top: 50%;
+    right: 60px;
+    width: 40px;
+    height: 40px;
+    background: var(--yellow);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: spinSlow 20s linear infinite;
+  }
+
+  .deco-star--2 {
+    top: 30%;
+    left: 50px;
+    width: 28px;
+    height: 28px;
+    background: var(--red);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: spinSlow 25s linear infinite reverse;
+  }
+
+  @keyframes spinSlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .header { padding: 24px 16px 12px; }
+    .config-bar {
+      margin: 0 12px 8px;
+      padding: 14px 16px;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .config-bar input[type="text"] { width: 100%; }
+    .grid {
+      grid-template-columns: 1fr;
+      padding: 12px 12px;
+      gap: 16px;
+    }
+    .action-bar { flex-wrap: wrap; }
+    .log-section { padding: 12px 12px 24px; }
+    .card-actions { flex-wrap: wrap; }
+  }
+
+  @media (max-width: 480px) {
+    .header-title { font-size: 2rem; }
+    .card { padding: 16px; border-radius: var(--radius-lg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Decorative background elements -->
+<div class="deco-dots deco-dots--tl" aria-hidden="true"></div>
+<div class="deco-dots deco-dots--br" aria-hidden="true"></div>
+<div class="deco-star deco-star--1" aria-hidden="true"></div>
+<div class="deco-star deco-star--2" aria-hidden="true"></div>
+
+<header class="header">
+  <h1 class="header-title">Shotgun</h1>
+  <p class="header-sub">runDisney Queue Manager</p>
+</header>
+
+<div class="config-bar">
+  <label for="targetUrl">URL</label>
+  <input type="text" id="targetUrl" autocomplete="off">
+  <label for="browserCount">Count</label>
+  <input type="number" id="browserCount" min="1" max="20">
+  <button class="btn-primary" onclick="saveConfig()">Save Config</button>
+  <button class="btn-success" onclick="launchAll()">Launch All</button>
+</div>
+
+<div class="action-bar">
+  <button class="btn-info" onclick="launchOne()">Launch One More</button>
+  <button class="btn-danger" onclick="closeAll()">Close All</button>
+</div>
+
+<div class="grid" id="grid">
+  <div class="empty-state" id="emptyState">No sessions yet. Configure URL and click Launch All.</div>
+</div>
+
+<section class="log-section">
+  <h3>Event Log</h3>
+  <div id="log" role="log" aria-live="polite"></div>
+</section>
+
+<script>
+const grid = document.getElementById('grid');
+const logEl = document.getElementById('log');
+const emptyState = document.getElementById('emptyState');
+const sessionsMap = {};
+let cardIndex = 0;
+
+fetch('/api/sessions').then(r => r.json()).then(data => {
+  document.getElementById('targetUrl').value = data.config.targetUrl;
+  document.getElementById('browserCount').value = data.config.browserCount;
+  data.sessions.forEach(s => upsertCard(s));
+});
+
+const evtSource = new EventSource('/api/events');
+evtSource.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+  if (data.type === 'log') appendLog(data.message);
+  if (data.type === 'update') upsertCard(data.session);
+  if (data.type === 'remove') removeCard(data.id);
+};
+
+function appendLog(msg) {
+  const d = document.createElement('div');
+  d.textContent = msg;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function badgeClass(status) {
+  return 'badge badge-' + (status || 'stopped');
+}
+
+function upsertCard(s) {
+  emptyState.style.display = 'none';
+  if (sessionsMap[s.id]) {
+    const card = sessionsMap[s.id];
+    const badge = card.querySelector('.badge');
+    badge.className = badgeClass(s.status);
+    badge.textContent = s.status;
+    const btns = card.querySelectorAll('.card-actions button');
+    const isRunning = s.status === 'running';
+    btns[0].disabled = !isRunning;
+    btns[1].disabled = !isRunning;
+    btns[2].disabled = !isRunning;
+    const waitEl = card.querySelector('.wait-info');
+    waitEl.textContent = s.waitInfo || '';
+    const vb = card.querySelector('.verified-badge');
+    vb.className = 'verified-badge' + (s.verified ? ' show' : '');
+    const cid = card.querySelector('.cookie-id');
+    cid.textContent = s.verified ? s.cookieId || '' : '';
+    return;
+  }
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (cardIndex * 0.08) + 's';
+  cardIndex++;
+  const isRunning = s.status === 'running';
+  card.innerHTML =
+    '<div class="card-header">' +
+      '<div class="card-title">' +
+        '<span class="card-name">' + esc(s.name) + '</span>' +
+        '<span class="verified-badge' + (s.verified ? ' show' : '') + '">&#10003; verified</span>' +
+      '</div>' +
+      '<span class="' + badgeClass(s.status) + '">' + esc(s.status) + '</span>' +
+    '</div>' +
+    '<div class="wait-info">' + esc(s.waitInfo || '') + '</div>' +
+    '<div class="cookie-id">' + (s.verified ? esc(s.cookieId || '') : '') + '</div>' +
+    '<div class="card-actions">' +
+      '<button class="btn-focus btn-sm" onclick="focusOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Focus</button>' +
+      '<button class="btn-info btn-sm" onclick="takeScreenshot(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Screenshot</button>' +
+      '<button class="btn-danger btn-sm" onclick="closeOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Close</button>' +
+    '</div>' +
+    '<img class="card-screenshot" id="ss-' + s.id + '" alt="Session screenshot">';
+  sessionsMap[s.id] = card;
+  grid.appendChild(card);
+}
+
+function removeCard(id) {
+  const card = sessionsMap[id];
+  if (!card) return;
+  card.classList.add('removing');
+  setTimeout(() => {
+    card.remove();
+    delete sessionsMap[id];
+    if (Object.keys(sessionsMap).length === 0) {
+      emptyState.style.display = '';
+    }
+  }, 350);
+}
+
+function esc(str) {
+  const d = document.createElement('span');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function saveConfig() {
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      targetUrl: document.getElementById('targetUrl').value,
+      browserCount: document.getElementById('browserCount').value,
+    }),
+  });
+}
+
+async function launchAll() {
+  await saveConfig();
+  fetch('/api/sessions/launch-all', { method: 'POST' });
+}
+
+async function launchOne() {
+  await saveConfig();
+  fetch('/api/sessions/launch', { method: 'POST' });
+}
+
+function closeAll() { fetch('/api/sessions/close-all', { method: 'POST' }); }
+
+function focusOne(id) { fetch('/api/sessions/' + id + '/focus', { method: 'POST' }); }
+
+function closeOne(id) { fetch('/api/sessions/' + id + '/close', { method: 'POST' }); }
+
+async function takeScreenshot(id) {
+  const img = document.getElementById('ss-' + id);
+  img.style.display = 'none';
+  const r = await fetch('/api/sessions/' + id + '/screenshot', { method: 'POST' });
+  if (!r.ok) return;
+  const data = await r.json();
+  img.src = data.screenshot;
+  img.style.display = 'block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shotgun — Enchanted Castle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+     DESIGN TOKENS
+     ============================================ */
+  :root {
+    /* Color Palette — Enchanted Castle */
+    --midnight:        #0C1445;
+    --midnight-deep:   #070E2E;
+    --midnight-light:  #111B54;
+    --royal-gold:      #D4AF37;
+    --gold-light:      #E8CD6E;
+    --gold-pale:       #F5E6A3;
+    --cream:           #FFF8E7;
+    --cream-muted:     #E8DFC8;
+    --enchanted:       #4A2C8A;
+    --enchanted-light: #6B42B8;
+    --enchanted-glow:  #7D55CC;
+
+    /* Neutrals */
+    --surface:         #0F1750;
+    --surface-raised:  #15205E;
+    --border:          #2A2E6A;
+    --border-gold:     rgba(212, 175, 55, 0.25);
+    --text-primary:    #FFF8E7;
+    --text-secondary:  #A8A4C8;
+    --text-dim:        #6B6890;
+
+    /* Status Colors */
+    --status-running:  #3ECF6E;
+    --status-launching:#D4AF37;
+    --status-stopped:  #5A567A;
+    --status-error:    #E85454;
+
+    /* Spacing Scale (4px base) */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 24px;
+    --sp-6: 32px;
+    --sp-7: 48px;
+    --sp-8: 64px;
+
+    /* Typography Scale (1.25x Major Third) */
+    --text-xs:   0.64rem;
+    --text-sm:   0.8rem;
+    --text-base: 1rem;
+    --text-lg:   1.25rem;
+    --text-xl:   1.563rem;
+    --text-2xl:  1.953rem;
+    --text-3xl:  2.441rem;
+
+    /* Radii */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* Shadows */
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(212, 175, 55, 0.15);
+    --shadow-glow: 0 0 30px rgba(74, 44, 138, 0.3), 0 0 60px rgba(74, 44, 138, 0.1);
+    --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
+
+    /* Transitions */
+    --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+    --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  /* ============================================
+     RESET & BASE
+     ============================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--midnight-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ============================================
+     BACKGROUND — CASTLE NIGHT SKY
+     ============================================ */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 100%, var(--midnight) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 50% at 20% 90%, rgba(74, 44, 138, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 50% at 80% 90%, rgba(74, 44, 138, 0.1) 0%, transparent 60%),
+      linear-gradient(180deg, #030820 0%, var(--midnight-deep) 40%, var(--midnight) 100%);
+    pointer-events: none;
+  }
+
+  /* Castle Silhouette */
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 280px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 280' preserveAspectRatio='none'%3E%3Cpath d='M0,280 L0,200 L30,200 L30,160 L40,140 L50,160 L50,200 L80,200 L80,180 L90,180 L90,120 L100,100 L110,120 L110,180 L120,180 L120,200 L200,200 L200,150 L210,130 L215,80 L220,130 L230,150 L230,200 L260,200 L260,180 L270,160 L275,120 L280,160 L290,180 L290,200 L380,200 L380,170 L400,170 L400,140 L410,120 L415,60 L420,120 L430,140 L430,170 L450,170 L450,200 L520,200 L520,190 L530,190 L530,160 L540,140 L545,100 L550,140 L560,160 L560,190 L570,190 L570,200 L660,200 L660,170 L680,170 L680,130 L690,100 L700,50 L710,100 L720,130 L720,170 L740,170 L740,200 L820,200 L820,180 L830,160 L835,130 L840,160 L850,180 L850,200 L940,200 L940,160 L960,160 L960,120 L970,90 L980,40 L990,90 L1000,120 L1000,160 L1020,160 L1020,200 L1100,200 L1100,180 L1110,160 L1115,130 L1120,160 L1130,180 L1130,200 L1200,200 L1200,190 L1210,170 L1215,140 L1220,170 L1230,190 L1230,200 L1300,200 L1300,170 L1320,170 L1320,130 L1330,100 L1340,60 L1350,100 L1360,130 L1360,170 L1380,170 L1380,200 L1440,200 L1440,280 Z' fill='%23D4AF37'/%3E%3C/svg%3E") no-repeat bottom center;
+    background-size: 100% auto;
+  }
+
+  /* ============================================
+     STARS / SPARKLE ANIMATIONS
+     ============================================ */
+  .stars-container {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--cream);
+    border-radius: 50%;
+    animation: twinkle var(--duration) var(--ease-in-out) infinite;
+    animation-delay: var(--delay);
+    opacity: 0;
+  }
+
+  .star.large {
+    width: 3px;
+    height: 3px;
+    box-shadow: 0 0 6px 1px rgba(212, 175, 55, 0.4);
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Gold shimmer line */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+
+  /* Card entrance */
+  @keyframes cardReveal {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Header entrance */
+  @keyframes crownDrop {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Subtle glow pulse */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: var(--shadow-card); }
+    50% { box-shadow: var(--shadow-card), 0 0 16px rgba(212, 175, 55, 0.12); }
+  }
+
+  /* ============================================
+     MAIN CONTENT WRAPPER
+     ============================================ */
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--sp-5);
+    padding-bottom: var(--sp-7);
+  }
+
+  /* ============================================
+     HEADER
+     ============================================ */
+  .header {
+    text-align: center;
+    padding: var(--sp-6) 0 var(--sp-4);
+    animation: crownDrop 500ms var(--ease-out) both;
+  }
+
+  .header-crown {
+    display: inline-block;
+    font-size: var(--text-2xl);
+    color: var(--royal-gold);
+    letter-spacing: 0.15em;
+    margin-bottom: var(--sp-1);
+    opacity: 0.6;
+  }
+
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    font-size: var(--text-3xl);
+    letter-spacing: 0.08em;
+    color: var(--cream);
+    text-transform: uppercase;
+    background: linear-gradient(180deg, var(--cream) 30%, var(--royal-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+
+  .header-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: var(--text-base);
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-top: var(--sp-2);
+    letter-spacing: 0.04em;
+  }
+
+  .header-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    margin-top: var(--sp-5);
+  }
+
+  .header-divider::before,
+  .header-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+  }
+
+  .header-divider span {
+    color: var(--royal-gold);
+    font-size: var(--text-sm);
+    opacity: 0.6;
+  }
+
+  /* ============================================
+     CONFIG BAR
+     ============================================ */
+  .config-bar {
+    display: flex;
+    gap: var(--sp-3);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: var(--sp-4) var(--sp-5);
+    background: rgba(15, 23, 80, 0.6);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(8px);
+    margin-bottom: var(--sp-4);
+    animation: cardReveal 500ms var(--ease-out) 100ms both;
+  }
+
+  .config-bar label {
+    font-family: 'Cinzel', serif;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .config-bar input[type=text],
+  .config-bar input[type=number] {
+    background: var(--midnight-deep);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--radius-md);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: var(--text-base);
+    transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+    outline: none;
+  }
+
+  .config-bar input[type=text] {
+    width: 400px;
+    max-width: 60vw;
+  }
+
+  .config-bar input[type=number] {
+    width: 64px;
+    text-align: center;
+  }
+
+  .config-bar input:focus {
+    border-color: var(--royal-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+  }
+
+  /* ============================================
+     BUTTONS
+     ============================================ */
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--sp-2) var(--sp-4);
+    font-family: 'Cinzel', serif;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all 150ms var(--ease-out);
+    position: relative;
+    overflow: hidden;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+  }
+
+  button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: none;
+  }
+
+  button:hover::after {
+    animation: shimmer 600ms var(--ease-out) forwards;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+  }
+
+  button:active {
+    transform: translateY(0px) scale(0.98);
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: default;
+    transform: none;
+  }
+
+  button:disabled::after {
+    display: none;
+  }
+
+  button:disabled:hover {
+    transform: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--royal-gold) 0%, #C9A020 100%);
+    color: var(--midnight-deep);
+    box-shadow: 0 2px 12px rgba(212, 175, 55, 0.25);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--status-running) 0%, #2BA855 100%);
+    color: var(--midnight-deep);
+    box-shadow: 0 2px 12px rgba(62, 207, 110, 0.2);
+  }
+
+  .btn-success:hover {
+    box-shadow: 0 4px 16px rgba(62, 207, 110, 0.35);
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #C04040 0%, #A03030 100%);
+    color: var(--cream);
+    box-shadow: 0 2px 12px rgba(192, 64, 64, 0.2);
+  }
+
+  .btn-danger:hover {
+    box-shadow: 0 4px 16px rgba(192, 64, 64, 0.35);
+  }
+
+  .btn-info {
+    background: linear-gradient(135deg, var(--enchanted) 0%, #3D2278 100%);
+    color: var(--cream);
+    box-shadow: 0 2px 12px rgba(74, 44, 138, 0.25);
+  }
+
+  .btn-info:hover {
+    box-shadow: 0 4px 16px rgba(74, 44, 138, 0.4);
+  }
+
+  .btn-focus {
+    background: linear-gradient(135deg, var(--royal-gold) 0%, #B8962F 100%);
+    color: var(--midnight-deep);
+  }
+
+  .btn-sm {
+    padding: var(--sp-1) var(--sp-3);
+    font-size: var(--text-xs);
+    min-height: 36px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ============================================
+     ACTION BAR
+     ============================================ */
+  .action-bar {
+    display: flex;
+    gap: var(--sp-3);
+    justify-content: center;
+    padding: var(--sp-3) 0 var(--sp-5);
+    animation: cardReveal 500ms var(--ease-out) 200ms both;
+  }
+
+  /* ============================================
+     SESSIONS GRID
+     ============================================ */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--sp-4);
+    padding: var(--sp-2) 0;
+    min-height: 120px;
+  }
+
+  /* ============================================
+     SESSION CARDS — Enchanted Portals
+     ============================================ */
+  .card {
+    background: linear-gradient(165deg, var(--surface) 0%, var(--surface-raised) 100%);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-5);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    animation: cardReveal 300ms var(--ease-out) both;
+    transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out), border-color 300ms var(--ease-out), opacity 300ms var(--ease-out);
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card), var(--shadow-glow);
+    border-color: var(--border-gold);
+  }
+
+  .card.removing {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+
+  /* Gold top border accent */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--sp-5);
+    right: var(--sp-5);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--royal-gold), transparent);
+    opacity: 0.5;
+  }
+
+  /* Corner ornament */
+  .card::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(225deg, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
+    border-radius: 0 var(--radius-lg) 0 0;
+    pointer-events: none;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  .card-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: var(--text-lg);
+    color: var(--cream);
+    letter-spacing: 0.02em;
+  }
+
+  .verified-badge {
+    color: var(--status-running);
+    font-size: var(--text-sm);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    display: none;
+  }
+
+  .verified-badge.show {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  /* Status Badges */
+  .badge {
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: 100px;
+    font-family: 'Cinzel', serif;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .badge-running {
+    background: rgba(62, 207, 110, 0.15);
+    color: var(--status-running);
+    border: 1px solid rgba(62, 207, 110, 0.3);
+    animation: glowPulse 3s var(--ease-in-out) infinite;
+  }
+
+  .badge-launching {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold-light);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+  }
+
+  .badge-stopped {
+    background: rgba(90, 86, 122, 0.2);
+    color: var(--text-dim);
+    border: 1px solid rgba(90, 86, 122, 0.3);
+  }
+
+  .badge-error {
+    background: rgba(232, 84, 84, 0.15);
+    color: var(--status-error);
+    border: 1px solid rgba(232, 84, 84, 0.3);
+  }
+
+  /* Card content */
+  .wait-info {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--gold-light);
+    min-height: 1.4em;
+    font-style: italic;
+  }
+
+  .cookie-id {
+    font-size: var(--text-xs);
+    color: var(--text-dim);
+    font-family: 'Cascadia Code', 'Fira Code', 'SF Mono', monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: var(--sp-2);
+    margin-top: var(--sp-1);
+  }
+
+  .card-screenshot {
+    width: 100%;
+    border-radius: var(--radius-md);
+    margin-top: var(--sp-2);
+    display: none;
+    border: 1px solid var(--border-gold);
+  }
+
+  /* ============================================
+     EMPTY STATE
+     ============================================ */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--sp-8) var(--sp-5);
+    color: var(--text-dim);
+    font-size: var(--text-lg);
+    font-style: italic;
+  }
+
+  .empty-state-castle {
+    font-size: 3rem;
+    margin-bottom: var(--sp-4);
+    opacity: 0.3;
+    display: block;
+    color: var(--royal-gold);
+  }
+
+  /* ============================================
+     LOG SECTION
+     ============================================ */
+  .log-section {
+    padding: var(--sp-5) 0;
+    animation: cardReveal 500ms var(--ease-out) 300ms both;
+  }
+
+  .log-section h3 {
+    font-family: 'Cinzel', serif;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: var(--sp-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  .log-section h3::before {
+    content: '';
+    width: 12px;
+    height: 1px;
+    background: var(--royal-gold);
+    opacity: 0.5;
+  }
+
+  #log {
+    background: rgba(3, 8, 32, 0.8);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    height: 200px;
+    overflow-y: auto;
+    padding: var(--sp-4);
+    font-family: 'Cascadia Code', 'Fira Code', 'SF Mono', monospace;
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--enchanted-glow);
+    scroll-behavior: smooth;
+  }
+
+  #log div {
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding: 1px 0;
+    border-bottom: 1px solid rgba(42, 46, 106, 0.2);
+  }
+
+  #log div:last-child {
+    border-bottom: none;
+  }
+
+  /* Custom scrollbar */
+  #log::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #log::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #log::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+
+  #log::-webkit-scrollbar-thumb:hover {
+    background: var(--enchanted);
+  }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media (max-width: 768px) {
+    .app {
+      padding: 0 var(--sp-4);
+      padding-bottom: var(--sp-6);
+    }
+
+    .header h1 {
+      font-size: var(--text-2xl);
+    }
+
+    .config-bar {
+      padding: var(--sp-3);
+    }
+
+    .config-bar input[type=text] {
+      width: 100%;
+      max-width: none;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .card {
+      padding: var(--sp-4);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header h1 {
+      font-size: var(--text-xl);
+      letter-spacing: 0.04em;
+    }
+
+    .action-bar {
+      flex-wrap: wrap;
+    }
+
+    .card-actions {
+      flex-wrap: wrap;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars background -->
+<div class="stars-container" id="starsContainer" aria-hidden="true"></div>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-crown" aria-hidden="true">&#9830; &#9830; &#9830;</div>
+    <h1>Shotgun</h1>
+    <p class="header-subtitle">runDisney Queue Commander</p>
+    <div class="header-divider" aria-hidden="true"><span>&#9830;</span></div>
+  </header>
+
+  <!-- Config Bar -->
+  <div class="config-bar">
+    <label for="targetUrl">URL</label>
+    <input type="text" id="targetUrl" placeholder="Enter target URL...">
+    <label for="browserCount">Count</label>
+    <input type="number" id="browserCount" min="1" max="20" placeholder="4">
+    <button class="btn-primary" onclick="saveConfig()">Save Config</button>
+    <button class="btn-success" onclick="launchAll()">Launch All</button>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <button class="btn-info" onclick="launchOne()">Launch One More</button>
+    <button class="btn-danger" onclick="closeAll()">Close All</button>
+  </div>
+
+  <!-- Sessions Grid -->
+  <div class="grid" id="grid">
+    <div class="empty-state" id="emptyState">
+      <span class="empty-state-castle" aria-hidden="true">&#127984;</span>
+      No sessions yet. Configure URL and click Launch All.
+    </div>
+  </div>
+
+  <!-- Event Log -->
+  <div class="log-section">
+    <h3>Event Log</h3>
+    <div id="log" role="log" aria-live="polite"></div>
+  </div>
+
+</div>
+
+<script>
+// Generate stars
+(function createStars() {
+  const container = document.getElementById('starsContainer');
+  const count = 80;
+  for (let i = 0; i < count; i++) {
+    const star = document.createElement('div');
+    star.className = 'star' + (Math.random() > 0.85 ? ' large' : '');
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 70 + '%';
+    star.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
+    star.style.setProperty('--delay', (Math.random() * 5) + 's');
+    container.appendChild(star);
+  }
+})();
+
+// ============================================
+// APP LOGIC (mirrors original functionality)
+// ============================================
+const grid = document.getElementById('grid');
+const logEl = document.getElementById('log');
+const emptyState = document.getElementById('emptyState');
+const sessionsMap = {};
+
+// Load initial state
+fetch('/api/sessions').then(r => r.json()).then(data => {
+  document.getElementById('targetUrl').value = data.config.targetUrl;
+  document.getElementById('browserCount').value = data.config.browserCount;
+  data.sessions.forEach(s => upsertCard(s));
+});
+
+// SSE for live updates
+const evtSource = new EventSource('/api/events');
+evtSource.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+  if (data.type === 'log') appendLog(data.message);
+  if (data.type === 'update') upsertCard(data.session);
+  if (data.type === 'remove') removeCard(data.id);
+};
+
+function appendLog(msg) {
+  const d = document.createElement('div');
+  d.textContent = msg;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function badgeClass(status) {
+  return 'badge badge-' + (status || 'stopped');
+}
+
+let cardIndex = 0;
+
+function upsertCard(s) {
+  emptyState.style.display = 'none';
+  if (sessionsMap[s.id]) {
+    const card = sessionsMap[s.id];
+    card.querySelector('.badge').className = badgeClass(s.status);
+    card.querySelector('.badge').textContent = s.status;
+    const btns = card.querySelectorAll('.card-actions button');
+    const isRunning = s.status === 'running';
+    btns[0].disabled = !isRunning;
+    btns[1].disabled = !isRunning;
+    btns[2].disabled = !isRunning;
+    const waitEl = card.querySelector('.wait-info');
+    waitEl.textContent = s.waitInfo || '';
+    const vb = card.querySelector('.verified-badge');
+    vb.className = 'verified-badge' + (s.verified ? ' show' : '');
+    const cid = card.querySelector('.cookie-id');
+    cid.textContent = s.verified ? s.cookieId || '' : '';
+    return;
+  }
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (cardIndex * 60) + 'ms';
+  cardIndex++;
+  const isRunning = s.status === 'running';
+  card.innerHTML =
+    '<div class="card-header">' +
+      '<div class="card-title">' +
+        '<span class="card-name">' + esc(s.name) + '</span>' +
+        '<span class="verified-badge' + (s.verified ? ' show' : '') + '" title="Unique session verified">&#10003; verified</span>' +
+      '</div>' +
+      '<span class="' + badgeClass(s.status) + '">' + esc(s.status) + '</span>' +
+    '</div>' +
+    '<div class="wait-info">' + esc(s.waitInfo || '') + '</div>' +
+    '<div class="cookie-id">' + (s.verified ? esc(s.cookieId || '') : '') + '</div>' +
+    '<div class="card-actions">' +
+      '<button class="btn-focus btn-sm" onclick="focusOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Focus</button>' +
+      '<button class="btn-info btn-sm" onclick="takeScreenshot(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Screenshot</button>' +
+      '<button class="btn-danger btn-sm" onclick="closeOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Close</button>' +
+    '</div>' +
+    '<img class="card-screenshot" id="ss-' + s.id + '" alt="Session screenshot">';
+  sessionsMap[s.id] = card;
+  grid.appendChild(card);
+}
+
+function removeCard(id) {
+  const card = sessionsMap[id];
+  if (!card) return;
+  card.classList.add('removing');
+  setTimeout(() => {
+    card.remove();
+    delete sessionsMap[id];
+    if (Object.keys(sessionsMap).length === 0) {
+      emptyState.style.display = '';
+    }
+  }, 300);
+}
+
+function esc(str) {
+  const d = document.createElement('span');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function saveConfig() {
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      targetUrl: document.getElementById('targetUrl').value,
+      browserCount: document.getElementById('browserCount').value,
+    }),
+  });
+}
+
+async function launchAll() {
+  await saveConfig();
+  fetch('/api/sessions/launch-all', { method: 'POST' });
+}
+
+async function launchOne() {
+  await saveConfig();
+  fetch('/api/sessions/launch', { method: 'POST' });
+}
+
+function closeAll() { fetch('/api/sessions/close-all', { method: 'POST' }); }
+
+function focusOne(id) { fetch('/api/sessions/' + id + '/focus', { method: 'POST' }); }
+
+function closeOne(id) { fetch('/api/sessions/' + id + '/close', { method: 'POST' }); }
+
+async function takeScreenshot(id) {
+  const img = document.getElementById('ss-' + id);
+  img.style.display = 'none';
+  const r = await fetch('/api/sessions/' + id + '/screenshot', { method: 'POST' });
+  if (!r.ok) return;
+  const data = await r.json();
+  img.src = data.screenshot;
+  img.style.display = 'block';
+}
+</script>
+</body>
+</html>

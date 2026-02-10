@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shotgun — Race Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ========================================
+     DESIGN 3 — RACE DAY MORNING
+     Bright, athletic, sunrise energy
+     ======================================== */
+
+  :root {
+    /* Palette */
+    --sky-blue: #1B9CFC;
+    --sky-blue-deep: #1580D4;
+    --coral: #FF6B6B;
+    --coral-deep: #E85555;
+    --sunny: #FFD93D;
+    --sunny-deep: #F0C420;
+    --mint: #00D2D3;
+    --mint-deep: #00B8B9;
+    --white: #FFFFFF;
+    --off-white: #FFF8F0;
+    --warm-grey-50: #FEF9F4;
+    --warm-grey-100: #F5EDE4;
+    --warm-grey-200: #E8DDD1;
+    --warm-grey-300: #C4B8AA;
+    --warm-grey-400: #9A8E80;
+    --charcoal: #2D3436;
+    --charcoal-soft: #485460;
+
+    /* Status */
+    --status-running: #27ae60;
+    --status-launching: var(--sunny);
+    --status-stopped: var(--warm-grey-300);
+    --status-error: var(--coral);
+
+    /* Spacing (4px base) */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-10: 40px;
+    --sp-12: 48px;
+    --sp-16: 64px;
+
+    /* Type scale (1.25 major third) */
+    --text-xs: 0.64rem;
+    --text-sm: 0.8rem;
+    --text-base: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.563rem;
+    --text-2xl: 1.953rem;
+    --text-3xl: 2.441rem;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 100px;
+
+    /* Shadows */
+    --shadow-card: 0 2px 8px rgba(45,52,54,0.08), 0 1px 3px rgba(45,52,54,0.06);
+    --shadow-card-hover: 0 8px 24px rgba(45,52,54,0.12), 0 2px 6px rgba(45,52,54,0.08);
+    --shadow-btn: 0 2px 6px rgba(45,52,54,0.12);
+
+    /* Transitions */
+    --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+    --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --dur-fast: 150ms;
+    --dur-standard: 300ms;
+    --dur-weighty: 500ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ======== RESET ======== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ======== BODY / SUNRISE BG ======== */
+  body {
+    font-family: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+    font-size: var(--text-base);
+    color: var(--charcoal);
+    min-height: 100vh;
+    background: var(--off-white);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 320px;
+    background: linear-gradient(
+      170deg,
+      #FFB347 0%,
+      #FF6B6B 25%,
+      #FF85A1 45%,
+      #1B9CFC 70%,
+      #A8D8EA 100%
+    );
+    background-size: 200% 200%;
+    animation: sunriseShift 20s ease-in-out infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @keyframes sunriseShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 30%; }
+    100% { background-position: 50% 70%; }
+  }
+
+  /* Subtle noise overlay on gradient */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 320px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* ======== CONFETTI PARTICLES ======== */
+  .confetti-container {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 320px;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .confetti-dot {
+    position: absolute;
+    border-radius: 2px;
+    opacity: 0;
+    animation: confettiFall linear infinite;
+  }
+
+  @keyframes confettiFall {
+    0%   { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.5; }
+    100% { transform: translateY(320px) rotate(720deg); opacity: 0; }
+  }
+
+  /* ======== FINISH LINE STRIPE ======== */
+  .finish-stripe {
+    position: relative;
+    z-index: 1;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--charcoal) 0px,
+      var(--charcoal) 8px,
+      var(--white) 8px,
+      var(--white) 16px
+    );
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+
+  /* ======== HEADER ======== */
+  .header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: var(--sp-10) var(--sp-6) var(--sp-8);
+  }
+
+  .header-title {
+    font-family: 'Barlow Condensed', 'Impact', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    line-height: 1;
+  }
+
+  .header-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    margin-top: var(--sp-2);
+  }
+
+  /* ======== CONFIG BAR ======== */
+  .config-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: var(--sp-3);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: var(--sp-4) var(--sp-6);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--warm-grey-200);
+  }
+
+  .config-bar label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--charcoal-soft);
+  }
+
+  .config-bar input[type="text"],
+  .config-bar input[type="number"] {
+    background: var(--warm-grey-50);
+    border: 2px solid var(--warm-grey-200);
+    color: var(--charcoal);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--radius-sm);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: var(--text-base);
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .config-bar input[type="text"]:focus,
+  .config-bar input[type="number"]:focus {
+    outline: none;
+    border-color: var(--sky-blue);
+    box-shadow: 0 0 0 3px rgba(27,156,252,0.15);
+  }
+
+  .config-bar input[type="text"] { width: 360px; max-width: 60vw; }
+  .config-bar input[type="number"] { width: 64px; text-align: center; }
+
+  /* ======== BUTTONS ======== */
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: var(--sp-2) var(--sp-5);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: var(--text-sm);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all var(--dur-fast) var(--ease-out);
+    box-shadow: var(--shadow-btn);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(45,52,54,0.18);
+  }
+
+  button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-btn);
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-primary {
+    background: var(--sky-blue);
+    color: var(--white);
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--sky-blue-deep); }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--coral) 0%, #FF8E53 100%);
+    color: var(--white);
+  }
+  .btn-success:hover:not(:disabled) { background: linear-gradient(135deg, var(--coral-deep) 0%, #E87840 100%); }
+
+  .btn-danger {
+    background: var(--coral);
+    color: var(--white);
+  }
+  .btn-danger:hover:not(:disabled) { background: var(--coral-deep); }
+
+  .btn-info {
+    background: var(--mint);
+    color: var(--charcoal);
+  }
+  .btn-info:hover:not(:disabled) { background: var(--mint-deep); }
+
+  .btn-focus {
+    background: var(--sunny);
+    color: var(--charcoal);
+  }
+  .btn-focus:hover:not(:disabled) { background: var(--sunny-deep); }
+
+  .btn-sm {
+    padding: var(--sp-1) var(--sp-3);
+    font-size: var(--text-xs);
+    min-height: 32px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ======== ACTION BAR ======== */
+  .action-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: var(--sp-3);
+    justify-content: center;
+    padding: var(--sp-3) var(--sp-6);
+    background: rgba(255,255,255,0.6);
+    border-bottom: 1px solid var(--warm-grey-200);
+  }
+
+  /* ======== GRID ======== */
+  .main-content {
+    position: relative;
+    z-index: 1;
+    padding: var(--sp-6);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--sp-5);
+  }
+
+  /* ======== CARD — RACE BIB STYLE ======== */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 0;
+    border: 2px solid var(--warm-grey-200);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--dur-standard) var(--ease-out),
+                transform var(--dur-standard) var(--ease-out);
+    overflow: hidden;
+    animation: bibEntrance 0.5s var(--ease-spring) backwards;
+    position: relative;
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-3px);
+  }
+
+  .card.removing {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+    transition: all var(--dur-standard) var(--ease-in);
+  }
+
+  @keyframes bibEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Race bib number strip at top */
+  .card-bib-strip {
+    background: linear-gradient(135deg, var(--sky-blue) 0%, #47B5FF 100%);
+    padding: var(--sp-2) var(--sp-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .card-bib-strip::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--charcoal) 0px,
+      var(--charcoal) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    opacity: 0.2;
+  }
+
+  .card-bib-number {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: var(--text-2xl);
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .card-bib-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: var(--text-lg);
+    color: var(--white);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  /* Card body */
+  .card-body {
+    padding: var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    flex: 1;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  .verified-badge {
+    display: none;
+    align-items: center;
+    gap: 3px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--status-running);
+    background: rgba(39,174,96,0.08);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    letter-spacing: 0.02em;
+  }
+
+  .verified-badge.show {
+    display: inline-flex;
+  }
+
+  .verified-check {
+    font-size: var(--text-sm);
+    line-height: 1;
+  }
+
+  /* Status badge */
+  .badge {
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .badge-running {
+    background: var(--status-running);
+    color: var(--white);
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(39,174,96,0.3); }
+    50%      { box-shadow: 0 0 0 6px rgba(39,174,96,0); }
+  }
+
+  .badge-launching {
+    background: var(--sunny);
+    color: var(--charcoal);
+  }
+
+  .badge-stopped {
+    background: var(--warm-grey-200);
+    color: var(--charcoal-soft);
+  }
+
+  .badge-error {
+    background: var(--coral);
+    color: var(--white);
+  }
+
+  /* Wait info — like a race timer */
+  .wait-info {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--coral);
+    min-height: 1.3em;
+    letter-spacing: 0.02em;
+  }
+
+  .cookie-id {
+    font-size: var(--text-xs);
+    color: var(--warm-grey-400);
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Card actions */
+  .card-actions {
+    display: flex;
+    gap: var(--sp-2);
+    padding-top: var(--sp-2);
+    border-top: 1px solid var(--warm-grey-100);
+  }
+
+  .card-screenshot {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    margin-top: var(--sp-2);
+    display: none;
+    border: 1px solid var(--warm-grey-200);
+  }
+
+  /* ======== MILE MARKER (empty state) ======== */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--sp-16) var(--sp-6);
+    color: var(--warm-grey-400);
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: var(--sp-4);
+    display: block;
+    opacity: 0.5;
+  }
+
+  .empty-state-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--warm-grey-300);
+  }
+
+  .empty-state-sub {
+    font-size: var(--text-sm);
+    color: var(--warm-grey-400);
+    margin-top: var(--sp-2);
+  }
+
+  /* ======== LOG SECTION ======== */
+  .log-section {
+    position: relative;
+    z-index: 1;
+    padding: var(--sp-4) var(--sp-6) var(--sp-8);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .log-section h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-grey-400);
+    margin-bottom: var(--sp-2);
+  }
+
+  #log {
+    background: var(--charcoal);
+    border: 2px solid var(--warm-grey-200);
+    border-radius: var(--radius-md);
+    height: 180px;
+    overflow-y: auto;
+    padding: var(--sp-3) var(--sp-4);
+    font-family: 'Cascadia Code', 'Fira Code', 'Source Code Pro', monospace;
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: #A8E6CF;
+  }
+
+  #log div {
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding: 1px 0;
+  }
+
+  #log::-webkit-scrollbar { width: 6px; }
+  #log::-webkit-scrollbar-track { background: transparent; }
+  #log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+  /* ======== STAGGER ANIMATION DELAYS ======== */
+  .card:nth-child(1)  { animation-delay: 0ms; }
+  .card:nth-child(2)  { animation-delay: 60ms; }
+  .card:nth-child(3)  { animation-delay: 120ms; }
+  .card:nth-child(4)  { animation-delay: 180ms; }
+  .card:nth-child(5)  { animation-delay: 240ms; }
+  .card:nth-child(6)  { animation-delay: 300ms; }
+  .card:nth-child(7)  { animation-delay: 360ms; }
+  .card:nth-child(8)  { animation-delay: 420ms; }
+  .card:nth-child(9)  { animation-delay: 480ms; }
+  .card:nth-child(10) { animation-delay: 540ms; }
+  .card:nth-child(11) { animation-delay: 600ms; }
+  .card:nth-child(12) { animation-delay: 660ms; }
+
+  /* ======== RESPONSIVE ======== */
+  @media (max-width: 767px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .config-bar {
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+    .config-bar input[type="text"] {
+      width: 100%;
+      max-width: 100%;
+    }
+    .header-title {
+      font-size: 2rem;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Confetti particles generated by JS -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<header class="header">
+  <h1 class="header-title">Shotgun</h1>
+  <p class="header-sub">runDisney Queue Manager</p>
+</header>
+
+<div class="config-bar">
+  <label for="targetUrl">Target URL</label>
+  <input type="text" id="targetUrl" placeholder="https://...">
+  <label for="browserCount">Runners</label>
+  <input type="number" id="browserCount" min="1" max="20" placeholder="4">
+  <button class="btn-primary" onclick="saveConfig()">Save Config</button>
+  <button class="btn-success" onclick="launchAll()">Start Race</button>
+</div>
+
+<div class="action-bar">
+  <button class="btn-info" onclick="launchOne()">Add Runner</button>
+  <button class="btn-danger" onclick="closeAll()">End Race</button>
+</div>
+
+<div class="finish-stripe"></div>
+
+<div class="main-content">
+  <div class="grid" id="grid">
+    <div class="empty-state" id="emptyState">
+      <span class="empty-state-icon">&#127939;</span>
+      <div class="empty-state-text">Runners at the Starting Line</div>
+      <div class="empty-state-sub">Configure your target URL and click Start Race to begin.</div>
+    </div>
+  </div>
+</div>
+
+<div class="log-section">
+  <h3>Race Log</h3>
+  <div id="log"></div>
+</div>
+
+<script>
+/* ========================================
+   FUNCTIONALITY — identical API surface
+   ======================================== */
+const grid = document.getElementById('grid');
+const logEl = document.getElementById('log');
+const emptyState = document.getElementById('emptyState');
+const sessionsMap = {};
+let cardIndex = 0;
+
+/* Load initial state */
+fetch('/api/sessions').then(r => r.json()).then(data => {
+  document.getElementById('targetUrl').value = data.config.targetUrl;
+  document.getElementById('browserCount').value = data.config.browserCount;
+  data.sessions.forEach(s => upsertCard(s));
+});
+
+/* SSE event stream */
+const evtSource = new EventSource('/api/events');
+evtSource.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+  if (data.type === 'log') appendLog(data.message);
+  if (data.type === 'update') upsertCard(data.session);
+  if (data.type === 'remove') removeCard(data.id);
+};
+
+function appendLog(msg) {
+  const d = document.createElement('div');
+  d.textContent = msg;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function badgeClass(status) {
+  return 'badge badge-' + (status || 'stopped');
+}
+
+function upsertCard(s) {
+  emptyState.style.display = 'none';
+
+  if (sessionsMap[s.id]) {
+    const card = sessionsMap[s.id];
+    const badge = card.querySelector('.badge');
+    badge.className = badgeClass(s.status);
+    badge.textContent = s.status;
+    const btns = card.querySelectorAll('.card-actions button');
+    const isRunning = s.status === 'running';
+    btns[0].disabled = !isRunning;
+    btns[1].disabled = !isRunning;
+    btns[2].disabled = !isRunning;
+    const waitEl = card.querySelector('.wait-info');
+    waitEl.textContent = s.waitInfo || '';
+    const vb = card.querySelector('.verified-badge');
+    vb.className = 'verified-badge' + (s.verified ? ' show' : '');
+    const cid = card.querySelector('.cookie-id');
+    cid.textContent = s.verified ? s.cookieId || '' : '';
+
+    /* Update bib strip color based on status */
+    const strip = card.querySelector('.card-bib-strip');
+    if (s.status === 'running') {
+      strip.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+    } else if (s.status === 'error') {
+      strip.style.background = 'linear-gradient(135deg, #e74c3c 0%, #ff6b6b 100%)';
+    } else if (s.status === 'launching') {
+      strip.style.background = 'linear-gradient(135deg, #FFD93D 0%, #FFB347 100%)';
+    } else {
+      strip.style.background = '';
+    }
+    return;
+  }
+
+  cardIndex++;
+  const card = document.createElement('div');
+  card.className = 'card';
+  const isRunning = s.status === 'running';
+  const bibNum = String(s.id).padStart(2, '0');
+
+  card.innerHTML =
+    '<div class="card-bib-strip">' +
+      '<span class="card-bib-number">#' + bibNum + '</span>' +
+      '<span class="card-bib-name">' + esc(s.name) + '</span>' +
+    '</div>' +
+    '<div class="card-body">' +
+      '<div class="card-header">' +
+        '<div class="card-title">' +
+          '<span class="verified-badge' + (s.verified ? ' show' : '') + '">' +
+            '<span class="verified-check">&#10003;</span> verified' +
+          '</span>' +
+        '</div>' +
+        '<span class="' + badgeClass(s.status) + '">' + esc(s.status) + '</span>' +
+      '</div>' +
+      '<div class="wait-info">' + esc(s.waitInfo || '') + '</div>' +
+      '<div class="cookie-id">' + (s.verified ? esc(s.cookieId || '') : '') + '</div>' +
+      '<div class="card-actions">' +
+        '<button class="btn-focus btn-sm" onclick="focusOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Focus</button>' +
+        '<button class="btn-info btn-sm" onclick="takeScreenshot(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Screenshot</button>' +
+        '<button class="btn-danger btn-sm" onclick="closeOne(' + s.id + ')"' + (isRunning ? '' : ' disabled') + '>Close</button>' +
+      '</div>' +
+      '<img class="card-screenshot" id="ss-' + s.id + '">' +
+    '</div>';
+
+  sessionsMap[s.id] = card;
+  grid.appendChild(card);
+}
+
+function removeCard(id) {
+  const card = sessionsMap[id];
+  if (!card) return;
+  card.classList.add('removing');
+  setTimeout(() => {
+    card.remove();
+    delete sessionsMap[id];
+    if (Object.keys(sessionsMap).length === 0) {
+      emptyState.style.display = '';
+    }
+  }, 300);
+}
+
+function esc(str) {
+  const d = document.createElement('span');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function saveConfig() {
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      targetUrl: document.getElementById('targetUrl').value,
+      browserCount: document.getElementById('browserCount').value,
+    }),
+  });
+}
+
+async function launchAll() {
+  await saveConfig();
+  fetch('/api/sessions/launch-all', { method: 'POST' });
+}
+
+async function launchOne() {
+  await saveConfig();
+  fetch('/api/sessions/launch', { method: 'POST' });
+}
+
+function closeAll() { fetch('/api/sessions/close-all', { method: 'POST' }); }
+function focusOne(id) { fetch('/api/sessions/' + id + '/focus', { method: 'POST' }); }
+function closeOne(id) { fetch('/api/sessions/' + id + '/close', { method: 'POST' }); }
+
+async function takeScreenshot(id) {
+  const img = document.getElementById('ss-' + id);
+  img.style.display = 'none';
+  const r = await fetch('/api/sessions/' + id + '/screenshot', { method: 'POST' });
+  if (!r.ok) return;
+  const data = await r.json();
+  img.src = data.screenshot;
+  img.style.display = 'block';
+}
+
+/* ======== CONFETTI GENERATOR ======== */
+(function initConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#FF6B6B', '#FFD93D', '#1B9CFC', '#00D2D3', '#FF8E53', '#FFFFFF'];
+  const count = 28;
+
+  for (let i = 0; i < count; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'confetti-dot';
+    const size = 4 + Math.random() * 6;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+    dot.style.background = color;
+    dot.style.left = Math.random() * 100 + '%';
+    dot.style.animationDuration = (6 + Math.random() * 10) + 's';
+    dot.style.animationDelay = (Math.random() * 12) + 's';
+    if (Math.random() > 0.5) {
+      dot.style.borderRadius = '50%';
+    }
+    container.appendChild(dot);
+  }
+})();
+</script>
+</body>
+</html>
