@@ -111,6 +111,7 @@
     font-weight: 600; transition: all 150ms var(--ease-out);
     position: relative; overflow: hidden; outline: none;
     min-height: 36px; color: var(--text-primary);
+    touch-action: manipulation;  /* no double-tap zoom / tap delay on iOS */
   }
   button:focus-visible { outline: 2px solid var(--cosmic-teal); outline-offset: 2px; }
   button:disabled { opacity: 0.3; cursor: default; pointer-events: none; }
