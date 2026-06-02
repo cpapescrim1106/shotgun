@@ -472,7 +472,8 @@
     .controller-stage img { max-height: calc(100dvh - 280px); }
     .controller-tools { grid-template-columns: 1fr 1fr; }
     .controller-tools input, .controller-tools .send-text { grid-column: 1 / -1; }
-    .controller-keys button { min-width: 56px; }
+    .controller-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .controller-keys button { min-width: 0; }
   }
   /* iPad portrait/landscape: denser multi-column */
   @media (min-width: 600px) {
@@ -588,7 +589,7 @@
     <div class="controller-header">
       <div class="controller-title">
         <h2 id="controllerTitle">Controller</h2>
-        <p id="controllerMeta">Tap the screenshot to click the browser window.</p>
+        <p id="controllerMeta">Tap the screenshot to click or select a field.</p>
       </div>
       <button class="btn-info btn-sm" onclick="closeController()">Close</button>
     </div>
@@ -599,17 +600,20 @@
       <img id="controllerImage" alt="Live browser screenshot">
     </div>
     <div class="controller-tools">
-      <input id="controllerText" type="text" autocomplete="off" placeholder="Type text, then Send">
+      <input id="controllerText" type="text" autocomplete="off" placeholder="Tap a field above, type here, then Send">
       <button class="btn-primary send-text" onclick="sendControllerText()">Send</button>
-      <button class="btn-info" onclick="scrollController('up')">▲ Up</button>
-      <button class="btn-info" onclick="scrollController('down')">▼ Down</button>
+      <button class="btn-info" onclick="scrollController('up')">Scroll ↑</button>
+      <button class="btn-info" onclick="scrollController('down')">Scroll ↓</button>
     </div>
-    <div class="controller-keys">
-      <button class="btn-info btn-sm" onclick="pressControllerKey('Enter')">Enter</button>
-      <button class="btn-info btn-sm" onclick="pressControllerKey('Tab')">Tab</button>
-      <button class="btn-info btn-sm" onclick="pressControllerKey('Backspace')">Back</button>
-      <button class="btn-info btn-sm" onclick="pressControllerKey('Escape')">Esc</button>
-      <button class="btn-info btn-sm" onclick="refreshController()">Refresh</button>
+    <div class="controller-keys" aria-label="Field navigation">
+      <button class="btn-info btn-sm" onclick="pressControllerKey('Shift+Tab')" title="Previous field">⇧ Tab</button>
+      <button class="btn-info btn-sm" onclick="pressControllerKey('Tab')" title="Next field">Tab</button>
+      <button class="btn-info btn-sm" onclick="pressControllerKey('Enter')" title="Submit / activate">Enter</button>
+      <button class="btn-info btn-sm" onclick="pressControllerKey('Escape')" title="Dismiss">Esc</button>
+      <button class="btn-info btn-sm" onclick="pressControllerKey('ArrowLeft')" aria-label="Arrow left">←</button>
+      <button class="btn-info btn-sm" onclick="pressControllerKey('ArrowUp')" aria-label="Arrow up">↑</button>
+      <button class="btn-info btn-sm" onclick="pressControllerKey('ArrowDown')" aria-label="Arrow down">↓</button>
+      <button class="btn-info btn-sm" onclick="pressControllerKey('ArrowRight')" aria-label="Arrow right">→</button>
     </div>
   </div>
 </div>
@@ -1036,7 +1040,7 @@ async function refreshController() {
   const bits = [];
   if (activeControllerViewport.title) bits.push(activeControllerViewport.title);
   if (activeControllerViewport.url) bits.push(activeControllerViewport.url);
-  controllerMeta.textContent = bits.join('  ·  ') || 'Tap the screenshot to click the browser window.';
+  controllerMeta.textContent = bits.join('  ·  ') || 'Tap the screenshot to click or select a field.';
 }
 
 controllerImage.addEventListener('pointerdown', (e) => { controllerPointerStart = { x: e.clientX, y: e.clientY, t: Date.now() }; });

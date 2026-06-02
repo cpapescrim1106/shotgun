@@ -346,6 +346,7 @@ function safeKey(key) {
   const allowed = new Set([
     "Enter",
     "Tab",
+    "Shift+Tab",
     "Backspace",
     "Delete",
     "Escape",
@@ -840,6 +841,8 @@ app.post("/api/sessions/mock", (req, res) => {
 
 // ── Dashboard HTML ───────────────────────────────────────────────────
 app.get("/", (_req, res) => {
+  // Always revalidate so dashboard edits show immediately (no stale phone cache).
+  res.set("Cache-Control", "no-cache");
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
