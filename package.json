@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test --experimental-strip-types tests/live-handoff-proof.test.ts"
+    "test": "node --test --experimental-strip-types tests/*.test.*"
   },
   "keywords": [],
   "author": "",

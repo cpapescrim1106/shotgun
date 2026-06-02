@@ -1,2 +1,4 @@
-node_modules/
 .sessions/
+.shotgun-token
+node_modules/
+tmp-previews/
