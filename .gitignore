@@ -1,4 +1,7 @@
 .sessions/
 .shotgun-token
+.shotgun.pid
+shotgun.log
 node_modules/
 tmp-previews/
+docs/screenshots/
