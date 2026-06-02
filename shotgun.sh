@@ -12,9 +12,18 @@ PHONE_URL="http://${MAGICDNS_HOST}:${PORT}/iphone"
 
 cd "$APP_DIR"
 
-listening_pid() {
-  lsof -tiTCP:"$PORT" -sTCP:LISTEN -n -P 2>/dev/null | head -n 1 || true
+# All PIDs listening on $PORT (via ss, with lsof fallback). errexit/pipefail
+# are disabled in a subshell so "no match" greps don't abort the script.
+listening_pids() {
+  (
+    set +e
+    set +o pipefail
+    { ss -ltnp 2>/dev/null | grep -E ":$PORT([[:space:]]|$)" | grep -oP 'pid=\K[0-9]+'
+      lsof -tiTCP:"$PORT" -sTCP:LISTEN -n -P 2>/dev/null
+    } | sort -u
+  )
 }
+listening_pid() { listening_pids | head -n 1; }
 
 print_access() {
   echo "Shotgun URL: $PHONE_URL"
@@ -102,8 +111,10 @@ case "${1:-start}" in
     fi
 
     echo "Starting Shotgun..."
+    # Launch node directly (not `npm start`) so the PID file is the real
+    # server process, which makes stop/restart reliable.
     SHOTGUN_NO_OPEN=1 HOST="$HOST" PORT="$PORT" SHOTGUN_MAGICDNS_HOST="$MAGICDNS_HOST" \
-      nohup npm start > "$LOG_FILE" 2>&1 &
+      nohup node server.js > "$LOG_FILE" 2>&1 &
     pid="$!"
     echo "$pid" > "$PID_FILE"
 
@@ -198,22 +209,47 @@ process.stdin.on("end", () => {
     ;;
 
   stop)
-    pid=""
+    # Stop everything tied to Shotgun: the recorded PID and whatever is
+    # actually listening on the port (covers stale PID files / orphans).
+    pids="$(listening_pids)"
     if [[ -f "$PID_FILE" ]]; then
-      pid="$(cat "$PID_FILE" 2>/dev/null || true)"
+      file_pid="$(cat "$PID_FILE" 2>/dev/null || true)"
+      [[ -n "$file_pid" ]] && pids="$pids
+$file_pid"
     fi
-    if [[ -z "$pid" ]]; then
-      pid="$(listening_pid)"
-    fi
-    if [[ -z "$pid" ]]; then
+    pids="$(printf '%s\n' "$pids" | sort -u | sed '/^$/d')"
+
+    if [[ -z "$pids" ]]; then
       echo "Shotgun is not running on port $PORT."
       rm -f "$PID_FILE"
       exit 0
     fi
 
-    echo "Stopping Shotgun (pid $pid)..."
-    kill "$pid" 2>/dev/null || true
+    echo "Stopping Shotgun (pids: $(printf '%s' "$pids" | tr '\n' ' '))..."
+    kill $pids 2>/dev/null || true
+
+    # Wait up to ~5s for the port to free, then force-kill any survivors.
+    for _ in {1..10}; do
+      [[ -z "$(listening_pids)" ]] && break
+      sleep 0.5
+    done
+    survivors="$(listening_pids)"
+    if [[ -n "$survivors" ]]; then
+      kill -9 $survivors 2>/dev/null || true
+      sleep 0.5
+    fi
+
     rm -f "$PID_FILE"
+    if [[ -n "$(listening_pids)" ]]; then
+      echo "Warning: port $PORT is still in use."
+      exit 1
+    fi
+    echo "Shotgun stopped."
+    ;;
+
+  restart)
+    "$0" stop || true
+    exec "$0" start
     ;;
 
   logs)
@@ -222,7 +258,7 @@ process.stdin.on("end", () => {
     ;;
 
   *)
-    echo "Usage: $0 [start|status|summary|queue|watch|doctor|stop|logs]"
+    echo "Usage: $0 [start|stop|restart|status|summary|queue|watch|doctor|logs]"
     exit 2
     ;;
 esac
